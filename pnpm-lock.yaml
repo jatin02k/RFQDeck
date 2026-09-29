@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@dodopayments/nextjs':
+        specifier: ^0.3.9
+        version: 0.3.9(next@16.2.7(@babel/core@7.29.7)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(zod@4.4.3)
       '@google/genai':
         specifier: ^2.12.0
         version: 2.12.0
@@ -17,6 +20,9 @@ importers:
       '@supabase/supabase-js':
         specifier: ^2.108.0
         version: 2.108.0
+      dodopayments:
+        specifier: ^2.52.0
+        version: 2.52.0
       dotenv:
         specifier: ^17.4.2
         version: 17.4.2
@@ -139,6 +145,17 @@ packages:
   '@babel/types@7.29.7':
     resolution: {integrity: sha512-4zBIxpPzowiZpusoFkyGVwakdRJUyuH5PxQ/PrqghfdFWWasvnCdPfQXHrenDai+gyLARulZjZowCOj6fjT4pA==}
     engines: {node: '>=6.9.0'}
+
+  '@dodopayments/core@0.3.15':
+    resolution: {integrity: sha512-xbBqfY7Ytq6c0jR1qmV8UqqyA7qGnOoP5g02NpDOWyCgkeXLxcAfr6z/g8FkPNCiFcI405oIwi0AlFDVUKm6SA==}
+    peerDependencies:
+      zod: ^3.25.0 || ^4.0.0
+
+  '@dodopayments/nextjs@0.3.9':
+    resolution: {integrity: sha512-AxKISyMwvtUxaNU9QYSIehLXYwG/cWlciQsg0ddfvQXS/jXD/0ArR7/Iys9tOOnXkBbORHbWyljzE1AlXqtk6w==}
+    peerDependencies:
+      next: ^14.0.0 || ^15.0.0 || ^16.0.0
+      zod: ^3.25.0 || ^4.0.0
 
   '@emnapi/core@1.10.0':
     resolution: {integrity: sha512-yq6OkJ4p82CAfPl0u9mQebQHKPJkY7WrIuk205cTYnYe+k2Z8YBh11FrbRG/H6ihirqcacOgl2BIO8oyMQLeXw==}
@@ -563,6 +580,9 @@ packages:
 
   '@rtsao/scc@1.1.0':
     resolution: {integrity: sha512-zt6OdqaDoOnJ1ZYsCYGt9YmWzDXl4vQdKTyJev62gFhRGKdx7mcT54V9KIjg+d2wi9EXsPvAPKe7i7WjfVWB8g==}
+
+  '@stablelib/base64@1.0.1':
+    resolution: {integrity: sha512-1bnPQqSxSuc3Ii6MhBysoWCg58j97aUjuCSZrGSmDxNqtytIi0k8utUenAwTZN4V5mXXYGsVUI9zeBqy+jBOSQ==}
 
   '@supabase/auth-js@2.108.0':
     resolution: {integrity: sha512-0CzVGVqHfNOhRQVEcAmu58Mex2Ce0zL3aGfyV+iFQjTK6OntLK/hLCLr/VDRX0E8/2CdsiY99L7fZ/8ys/op4w==}
@@ -1120,6 +1140,10 @@ packages:
     resolution: {integrity: sha512-35mSku4ZXK0vfCuHEDAwt55dg2jNajHZ1odvF+8SSr82EsZY4QmXfuWso8oEd8zRhVObSN18aM0CjSdoBX7zIw==}
     engines: {node: '>=0.10.0'}
 
+  dodopayments@2.52.0:
+    resolution: {integrity: sha512-NYdxsaTbjmYhysLWwg7YWlHQWBaa2buvHxAOG2LWTF97w3ZpYH1anGSM+1ebS2tL6daMCwbT+PDyLxCaTlYNVA==}
+    hasBin: true
+
   dotenv@17.4.2:
     resolution: {integrity: sha512-nI4U3TottKAcAD9LLud4Cb7b2QztQMUEfHbvhTH09bqXTxnSie8WnjPALV/WMCrJZ6UV/qHJ6L03OqO3LcdYZw==}
     engines: {node: '>=12'}
@@ -1274,6 +1298,7 @@ packages:
   eslint@9.39.4:
     resolution: {integrity: sha512-XoMjdBOwe/esVgEvLmNsD3IRHkm7fbKIUGvrleloJXUZgDHig2IPWNniv+GwjyJXzuNqVjlr5+4yVUZjycJwfQ==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+    deprecated: This version is no longer supported. Please see https://eslint.org/version-support for other options.
     hasBin: true
     peerDependencies:
       jiti: '*'
@@ -1316,6 +1341,9 @@ packages:
 
   fast-levenshtein@2.0.6:
     resolution: {integrity: sha512-DCXu6Ifhqcks7TZKY3Hxp3y6qphY5SJZmrWMDrKcERSOXWQdMhU9Ig/PYrzyw/ul9jOIyh0N4M0tbC5hodg8dw==}
+
+  fast-sha256@1.3.0:
+    resolution: {integrity: sha512-n11RGP/lrWEFI/bWdygLxhI+pVeo1ZYIVwvvPkW7azl/rOy+F3HYRZ2K5zeE9mmkhQppyv9sQFx0JM9UabnpPQ==}
 
   fastq@1.20.1:
     resolution: {integrity: sha512-GGToxJ/w1x32s/D2EKND7kTil4n8OVk/9mycTc4VDza13lOvpUZTGX3mFSCtV9ksdGBVzvsyAVLM6mHFThxXxw==}
@@ -2075,6 +2103,9 @@ packages:
   stable-hash@0.0.5:
     resolution: {integrity: sha512-+L3ccpzibovGXFK+Ap/f8LOS0ahMrHTf3xu7mMLSpEGU0EO9ucaysSylKo9eRDFNhWve/y275iPmIZ4z39a9iA==}
 
+  standardwebhooks@1.1.1:
+    resolution: {integrity: sha512-bCbX9ZEyFkWPsRz7Bl3NuQUJohmwGSev/yhr7vhaGPlc4AfIrspIRa6cPTBuI1ItmrTDJ4d/S2hCsfe4+vQGnQ==}
+
   stop-iteration-iterator@1.1.0:
     resolution: {integrity: sha512-eLoXW/DHyl62zxY4SCaIgnRhuMr6ri4juEYARS8E6sCEqzKpOiE521Ucofdx+KnDZl5xmvGYaaKCk5FEOxJCoQ==}
     engines: {node: '>= 0.4'}
@@ -2369,6 +2400,18 @@ snapshots:
     dependencies:
       '@babel/helper-string-parser': 7.29.7
       '@babel/helper-validator-identifier': 7.29.7
+
+  '@dodopayments/core@0.3.15(zod@4.4.3)':
+    dependencies:
+      dodopayments: 2.52.0
+      standardwebhooks: 1.1.1
+      zod: 4.4.3
+
+  '@dodopayments/nextjs@0.3.9(next@16.2.7(@babel/core@7.29.7)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(zod@4.4.3)':
+    dependencies:
+      '@dodopayments/core': 0.3.15(zod@4.4.3)
+      next: 16.2.7(@babel/core@7.29.7)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      zod: 4.4.3
 
   '@emnapi/core@1.10.0':
     dependencies:
@@ -2690,6 +2733,8 @@ snapshots:
   '@protobufjs/utf8@1.1.2': {}
 
   '@rtsao/scc@1.1.0': {}
+
+  '@stablelib/base64@1.0.1': {}
 
   '@supabase/auth-js@2.108.0':
     dependencies:
@@ -3224,6 +3269,10 @@ snapshots:
     dependencies:
       esutils: 2.0.3
 
+  dodopayments@2.52.0:
+    dependencies:
+      standardwebhooks: 1.1.1
+
   dotenv@17.4.2: {}
 
   dunder-proto@1.0.1:
@@ -3570,6 +3619,8 @@ snapshots:
   fast-json-stable-stringify@2.1.0: {}
 
   fast-levenshtein@2.0.6: {}
+
+  fast-sha256@1.3.0: {}
 
   fastq@1.20.1:
     dependencies:
@@ -4385,6 +4436,11 @@ snapshots:
   source-map-js@1.2.1: {}
 
   stable-hash@0.0.5: {}
+
+  standardwebhooks@1.1.1:
+    dependencies:
+      '@stablelib/base64': 1.0.1
+      fast-sha256: 1.3.0
 
   stop-iteration-iterator@1.1.0:
     dependencies:
