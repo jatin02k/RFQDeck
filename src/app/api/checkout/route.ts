@@ -1,8 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
-import { error } from "console";
 import DodoPayments from "dodopayments";
-import { unauthorized } from "next/navigation";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 const dodo = new DodoPayments({
   bearerToken: process.env.DODO_PAYMENTS_API_KEY!,
@@ -11,7 +9,7 @@ const dodo = new DodoPayments({
     | "live_mode",
 });
 
-export async function POST(req: NextResponse) {
+export async function POST(req: NextRequest) {
   try {
     const supabase = await createClient();
     const {
