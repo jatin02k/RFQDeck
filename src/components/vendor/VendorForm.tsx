@@ -4,6 +4,7 @@ import React, { useEffect, useState, useTransition } from "react";
 import { VendorSchema } from "@/lib/schemas";
 import { addVendors, updateVendor } from "@/actions/vendor";
 import { Vendor } from "@/types";
+import UpgradeButton from "@/components/billing/UpgradeButton";
 
 interface VendorFormProps {
   isOpen: boolean;
@@ -165,24 +166,30 @@ export default function VendorForm({
           </button>
         </div>
 
-        {/* Form Error Banner */}
-        {generalError && (
+        {/* Form Error or Plan Limit Banner */}
+        {generalError === "PLAN_LIMIT_REACHED" ? (
+          <div className="mb-5 p-3.5 bg-accent-light border border-accent-border text-text-primary text-xs rounded-sm space-y-2.5">
+            <div className="flex items-start gap-2.5">
+              <span className="text-accent font-bold text-sm">⚠</span>
+              <div>
+                <div className="font-heading font-bold text-text-primary">
+                  Vendor Directory Limit Reached (10/10)
+                </div>
+                <div className="font-body text-text-secondary text-[11px] mt-0.5">
+                  The Free plan includes up to 10 active vendors. Upgrade to Pro for unlimited vendor profiles.
+                </div>
+              </div>
+            </div>
+            <UpgradeButton variant="amber" label="Upgrade to Pro" className="w-full" />
+          </div>
+        ) : generalError ? (
           <div className="mb-5 p-3.5 bg-status-error-bg border border-status-error text-status-error text-xs flex items-start gap-2.5 rounded-sm">
-            <svg
-              className="w-4.5 h-4.5 shrink-0 mt-0.5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="square"
-                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-              />
+            <svg className="w-4.5 h-4.5 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="square" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
             </svg>
             <div className="font-body leading-normal">{generalError}</div>
           </div>
-        )}
+        ) : null}
 
         {/* Form Body */}
         <form onSubmit={handleSubmit} className="space-y-4">

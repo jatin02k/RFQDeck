@@ -46,6 +46,26 @@ export async function addVendors(
   const { supabase, user } = await getAuthenticatedUser();
   if (!user || !supabase) return { success: false, error: "Unauthorized" };
 
+  // CHECK PLAN LIMITS
+  const { data: company } = await supabase
+    .from("companies")
+    .select("plan")
+    .eq("id", user.id)
+    .single();
+
+  const isFree = (company?.plan || "free").toLowerCase() === "free";
+  if (isFree) {
+    const { count: vendorCount } = await supabase
+      .from("vendors")
+      .select("*", { count: "exact", head: true })
+      .eq("company_id", user.id)
+      .eq("is_active", true);
+
+    if ((vendorCount ?? 0) >= 10) {
+      return { success: false, error: "PLAN_LIMIT_REACHED" };
+    }
+  }
+
   const result = VendorSchema.safeParse(input);
   if (!result.success) {
     return { success: false, error: result.error.issues[0].message };

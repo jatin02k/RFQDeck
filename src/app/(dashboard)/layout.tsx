@@ -18,10 +18,40 @@ export default async function DashboardLayout({
 
   const userEmail = user.email || 'operator@rfqdeck.com'
 
+  // Fetch company plan details
+  const { data: company } = await supabase
+    .from('companies')
+    .select('plan, subscription_status, rfq_count_this_month')
+    .eq('id', user.id)
+    .single()
+
+  // Calculate RFQ usage for current month (with fallback to direct count)
+  let rfqCount = company?.rfq_count_this_month
+  if (rfqCount === undefined || rfqCount === null) {
+    const startOfMonth = new Date()
+    startOfMonth.setDate(1)
+    startOfMonth.setHours(0, 0, 0, 0)
+
+    const { count } = await supabase
+      .from('rfqs')
+      .select('*', { count: 'exact', head: true })
+      .eq('company_id', user.id)
+      .gte('created_at', startOfMonth.toISOString())
+
+    rfqCount = count ?? 0
+  }
+
+  const subscription = {
+    plan: (company?.plan || 'free').toLowerCase() as 'free' | 'pro',
+    status: company?.subscription_status || 'inactive',
+    rfqCount: rfqCount ?? 0,
+    rfqLimit: 3,
+  }
+
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-bg-base font-body text-text-primary antialiased">
       {/* Sidebar Navigation (Desktop left sidebar & Mobile bottom bar) */}
-      <SidebarNav userEmail={userEmail} />
+      <SidebarNav userEmail={userEmail} subscription={subscription} />
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-h-screen overflow-hidden">

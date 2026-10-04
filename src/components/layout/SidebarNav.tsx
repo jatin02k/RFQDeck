@@ -4,9 +4,18 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTransition } from "react";
 import { SignOut } from "@/actions/auth";
+import UpgradeButton from "@/components/billing/UpgradeButton";
+
+export interface SubscriptionInfo {
+  plan: "free" | "pro";
+  status: string;
+  rfqCount: number;
+  rfqLimit: number;
+}
 
 interface SidebarNavProps {
   userEmail: string;
+  subscription?: SubscriptionInfo;
 }
 
 const navItems = [
@@ -52,7 +61,7 @@ const navItems = [
   },
 ];
 
-export default function SidebarNav({ userEmail }: SidebarNavProps) {
+export default function SidebarNav({ userEmail, subscription }: SidebarNavProps) {
   const pathname = usePathname();
   const [isPending, startTransition] = useTransition();
 
@@ -61,6 +70,10 @@ export default function SidebarNav({ userEmail }: SidebarNavProps) {
       await SignOut();
     });
   };
+
+  const isPro = subscription?.plan === "pro";
+  const rfqCount = subscription?.rfqCount ?? 0;
+  const rfqLimit = subscription?.rfqLimit ?? 3;
 
   return (
     <>
@@ -109,6 +122,63 @@ export default function SidebarNav({ userEmail }: SidebarNavProps) {
             );
           })}
         </nav>
+
+        {/* SUBSCRIPTION & UPGRADE NUDGE CARD */}
+        <div className="px-3 pb-3">
+          <div className="border border-border-strong bg-bg-base p-3 rounded-sm space-y-2.5 shadow-2xs">
+            {/* Status indicator row: Red for Free, Green for Pro */}
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-heading font-semibold uppercase tracking-wider text-text-muted">
+                PLAN STATUS
+              </span>
+              {isPro ? (
+                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 text-[10px] font-mono font-bold uppercase rounded-sm bg-status-success-bg text-status-success border border-status-success/30">
+                  <span className="w-1.5 h-1.5 rounded-full bg-status-success animate-pulse"></span>
+                  Pro Plan
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 text-[10px] font-mono font-bold uppercase rounded-sm bg-status-error-bg text-status-error border border-status-error/30">
+                  <span className="w-1.5 h-1.5 rounded-full bg-status-error"></span>
+                  Free Plan
+                </span>
+              )}
+            </div>
+
+            {/* Usage stats or Pro status details */}
+            {isPro ? (
+              <div className="text-[11px] font-mono text-text-secondary">
+                Unlimited RFQs & Vendors active
+              </div>
+            ) : (
+              <div className="space-y-1">
+                <div className="flex justify-between text-[11px] font-mono text-text-secondary">
+                  <span>Monthly RFQs:</span>
+                  <span className="font-bold text-text-primary">{rfqCount}/{rfqLimit} used</span>
+                </div>
+                {/* Visual meter bar */}
+                <div className="w-full bg-bg-sunken h-1.5 rounded-xs overflow-hidden">
+                  <div
+                    className={`h-full transition-all ${
+                      rfqCount >= rfqLimit ? "bg-status-error" : "bg-accent"
+                    }`}
+                    style={{ width: `${Math.min((rfqCount / rfqLimit) * 100, 100)}%` }}
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Upgrade to Pro Button - Only shown when plan is Free */}
+            {!isPro && (
+              <div className="pt-1">
+                <UpgradeButton
+                  variant="amber"
+                  label="Upgrade to Pro"
+                  className="w-full"
+                />
+              </div>
+            )}
+          </div>
+        </div>
 
         {/* Footer Info & Sign Out */}
         <div className="border-t border-border-default p-4 bg-bg-surface space-y-3">

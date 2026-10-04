@@ -97,6 +97,33 @@ export async function createRFQ(
   const { supabase, user } = await getAuthenticatedUser();
   if (!user || !supabase) return { success: false, error: "Unauthorized" };
 
+  // Check Plan & Monthly RFQ Limit
+  const { data: company } = await supabase
+    .from("companies")
+    .select("plan, rfq_count_this_month")
+    .eq("id", user.id)
+    .single();
+
+  let currentCount = company?.rfq_count_this_month;
+  if (currentCount === undefined || currentCount === null) {
+    const startOfMonth = new Date();
+    startOfMonth.setDate(1);
+    startOfMonth.setHours(0, 0, 0, 0);
+
+    const { count } = await supabase
+      .from("rfqs")
+      .select("*", { count: "exact", head: true })
+      .eq("company_id", user.id)
+      .gte("created_at", startOfMonth.toISOString());
+
+    currentCount = count ?? 0;
+  }
+
+  const isFree = (company?.plan || "free").toLowerCase() === "free";
+  if (isFree && currentCount >= 3) {
+    return { success: false, error: "PLAN_LIMIT_REACHED" };
+  }
+
   let payload: any = input;
   let fileToUpload: File | null = null;
 
@@ -173,6 +200,13 @@ export async function createRFQ(
     if (error) {
       console.error("[createRFQ] DB error:", error.message);
       return { success: false, error: "Failed to create RFQ." };
+    }
+
+    if (isFree) {
+      await supabase
+        .from("companies")
+        .update({ rfq_count_this_month: currentCount + 1 })
+        .eq("id", user.id);
     }
 
     revalidatePath("/rfqs");

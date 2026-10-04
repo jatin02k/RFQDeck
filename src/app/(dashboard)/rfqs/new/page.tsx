@@ -4,6 +4,7 @@ import React, { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createRFQ } from "@/actions/rfq";
+import UpgradeButton from "@/components/billing/UpgradeButton";
 
 export default function NewRFQPage() {
   const router = useRouter();
@@ -192,24 +193,40 @@ export default function NewRFQPage() {
         </div>
       </div>
 
-      {/* General Error Banner */}
-      {errorMsg && (
+      {/* Plan Limit Error Prompt */}
+      {errorMsg === "PLAN_LIMIT_REACHED" ? (
+        <div className="p-4 bg-accent-light border border-accent-border text-text-primary text-xs rounded-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs">
+          <div className="flex items-start gap-3">
+            <svg
+              className="w-5 h-5 text-accent shrink-0 mt-0.5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path strokeLinecap="square" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <div>
+              <div className="font-heading font-bold text-sm text-text-primary">
+                Monthly RFQ Limit Reached (3/3 on Free Plan)
+              </div>
+              <p className="font-body text-text-secondary mt-0.5">
+                You have reached your 3 RFQ drafts limit for this month. Upgrade to Pro for unlimited RFQs and automated dispatch.
+              </p>
+            </div>
+          </div>
+          <div className="shrink-0 w-full sm:w-44">
+            <UpgradeButton variant="amber" label="Upgrade to Pro" />
+          </div>
+        </div>
+      ) : errorMsg ? (
         <div className="p-4 bg-status-error-bg border border-status-error text-status-error text-xs rounded-sm flex items-start gap-3">
-          <svg
-            className="w-4 h-4 shrink-0 mt-0.5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
-          >
-            <path
-              strokeLinecap="square"
-              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-            />
+          <svg className="w-4 h-4 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="square" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
           </svg>
           <div className="font-body leading-normal">{errorMsg}</div>
         </div>
-      )}
+      ) : null}
 
       {/* Two Column Layout */}
       <form
