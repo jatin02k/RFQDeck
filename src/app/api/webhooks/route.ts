@@ -2,6 +2,8 @@ import { createAdminClient } from "@/lib/supabase/server";
 import { headers } from "next/headers";
 import { Webhook } from "standardwebhooks";
 
+export const dynamic = "force-dynamic";
+
 const supabaseAdmin = createAdminClient()
 const webhook = new Webhook(process.env.DODO_PAYMENTS_WEBHOOK_SECRET!);
 
@@ -28,8 +30,18 @@ export async function POST(request: Request) {
 
   try {
     switch (eventType) {
+      // 1. Log completed payment transactions
+      case "payment.succeeded": {
+        const customerEmail = data.customer?.email;
+        if (customerEmail) {
+          console.log(`Payment received for ${customerEmail}: ${data.amount}`);
+        }
+        break;
+      }
+
+      // 2. Provision or renew Pro access
       case "subscription.active":
-      case "subscription.active": {
+      case "subscription.renewed": {
         const customerEmail = data.customer?.email;
         const customerId = data.customer?.customer_id;
         const subscriptionId = data.subscription_id;
