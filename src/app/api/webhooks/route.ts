@@ -4,10 +4,14 @@ import { Webhook } from "standardwebhooks";
 
 export const dynamic = "force-dynamic";
 
-const supabaseAdmin = createAdminClient()
-const webhook = new Webhook(process.env.DODO_PAYMENTS_WEBHOOK_SECRET!);
-
 export async function POST(request: Request) {
+  const webhookSecret = process.env.DODO_PAYMENTS_WEBHOOK_SECRET;
+
+  if (!webhookSecret) {
+    console.error("DODO_PAYMENTS_WEBHOOK_SECRET is not configured.");
+    return new Response("Webhook secret not configured", { status: 500 });
+  }
+
   const rawBody = await request.text();
 
   const headerPayload = await headers();
@@ -18,6 +22,7 @@ export async function POST(request: Request) {
   };
 
   try {
+    const webhook = new Webhook(webhookSecret);
     await webhook.verify(rawBody, webhookHeaders);
   } catch (err) {
     console.error("Dodo Webhook verification failed:", err);
@@ -27,6 +32,8 @@ export async function POST(request: Request) {
   const payload = JSON.parse(rawBody);
   const eventType = payload.type;
   const data = payload.data;
+
+  const supabaseAdmin = createAdminClient();
 
   try {
     switch (eventType) {
@@ -45,12 +52,14 @@ export async function POST(request: Request) {
         const customerEmail = data.customer?.email;
         const customerId = data.customer?.customer_id;
         const subscriptionId = data.subscription_id;
-        const periodEnd = data.next_billing_date ? new Date(data.next_billing_date).toISOString() : null;
+        const periodEnd = data.next_billing_date
+          ? new Date(data.next_billing_date).toISOString()
+          : null;
 
-        if(customerEmail){
-            await supabaseAdmin
-                .from("companies")
-                .update({
+        if (customerEmail) {
+          await supabaseAdmin
+            .from("companies")
+            .update({
               plan: "pro",
               subscription_status: "active",
               dodo_customer_id: customerId,
@@ -62,6 +71,8 @@ export async function POST(request: Request) {
         }
         break;
       }
+
+      // 3. Revoke Pro access
       case "subscription.cancelled":
       case "subscription.expired":
       case "subscription.failed": {
